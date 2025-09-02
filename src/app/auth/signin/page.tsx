@@ -38,12 +38,16 @@ export default function SignInPage() {
     }
   };
 
+  function isAuthErrorWithCode(error: unknown): error is { code: string } {
+    return typeof error === 'object' && error !== null && 'code' in error && typeof (error as { code: unknown }).code === 'string';
+  }
+
   const handleGoogleSignIn = async () => {
     setError('');
     try {
       await signInWithGoogle();
     } catch (err: unknown) {
-      if (typeof err === 'object' && err && 'code' in err && (err as any).code === 'auth/operation-not-allowed') {
+      if (isAuthErrorWithCode(err) && err.code === 'auth/operation-not-allowed') {
         setGoogleEnabled(false);
         setError('Google sign-in is not enabled.');
       } else if (err instanceof Error) {
