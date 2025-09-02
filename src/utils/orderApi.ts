@@ -1,3 +1,4 @@
+
 import { db } from './firebase';
 import {
   collection,
@@ -7,13 +8,14 @@ import {
   where,
   Timestamp,
 } from 'firebase/firestore';
+import { Product } from './mockProducts';
 
 export interface Order {
   id?: string;
   userId: string;
-  items: any[];
+  items: (Product & { quantity: number })[];
   total: number;
-  createdAt: any;
+  createdAt: Timestamp;
 }
 
 const COLLECTION = 'orders';

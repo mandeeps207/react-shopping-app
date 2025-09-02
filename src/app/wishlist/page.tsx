@@ -20,7 +20,7 @@ export default function WishlistPage() {
               <li key={item.id} className="mb-2 flex items-center gap-2">
                 {item.name} - ${item.price.toFixed(2)}
                 <button
-                  onClick={() => dispatch(removeFromWishlist(Number(item.id)))}
+                  onClick={() => dispatch(removeFromWishlist(item.id))}
                   className="ml-2 px-2 py-1 bg-red-500 text-white rounded text-xs"
                 >
                   Remove

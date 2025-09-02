@@ -1,24 +1,25 @@
 "use client";
-import { useSession } from 'next-auth/react';
+import { useAuth } from '../../components/Providers';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { getOrders, Order } from '../../utils/orderApi';
 
 export default function OrdersPage() {
-  const { data: session, status } = useSession();
+  const { user, loading: authLoading } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (status === 'authenticated' && session?.user?.email) {
+    if (!authLoading && user?.email) {
       setLoading(true);
-      getOrders(session.user.email)
+      getOrders(user.email)
         .then(setOrders)
         .finally(() => setLoading(false));
     }
-  }, [status, session]);
+  }, [authLoading, user]);
 
-  if (status !== 'authenticated') {
+  if (authLoading) return null;
+  if (!user) {
     return (
       <main className="p-8">
         <h1 className="text-2xl font-bold mb-4">Order History</h1>

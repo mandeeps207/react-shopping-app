@@ -1,6 +1,7 @@
 "use client";
 import { useAuth } from '../../components/Providers';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { getProducts, addProduct, deleteProduct } from '../../utils/productApi';
 import { Product } from '../../utils/mockProducts';
@@ -13,6 +14,14 @@ export default function AdminPage() {
   const [form, setForm] = useState({ name: '', price: '', category: '', image: '' });
   const [imagePreview, setImagePreview] = useState<string>('');
 
+  useEffect(() => {
+    if (loading || !user || user.email !== 'infocus8150@gmail.com') return;
+    getProducts().then(data => {
+      setProducts(data);
+      setProductsLoading(false);
+    });
+  }, [loading, user]);
+
   if (loading) return null;
   if (!user) {
     return (
@@ -23,21 +32,25 @@ export default function AdminPage() {
       </main>
     );
   }
-  if (user.email !== 'mandeeps207@outlook.com') {
+  if (!user || user.email !== 'infocus8150@gmail.com') {
     return (
       <main className="p-8">
         <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
         <p>You do not have admin access.</p>
+        <div className="mt-4 text-sm text-red-600 font-mono">
+          <strong>Debug info:</strong>
+          {user ? (
+            <>
+              <div>user.email: {user.email || 'N/A'}</div>
+              <div>user object: <pre className="whitespace-pre-wrap">{JSON.stringify(user, null, 2)}</pre></div>
+            </>
+          ) : (
+            <div>No user is currently signed in.</div>
+          )}
+        </div>
       </main>
     );
   }
-
-  useEffect(() => {
-    getProducts().then(data => {
-      setProducts(data);
-      setProductsLoading(false);
-    });
-  }, []);
 
   const handleDelete = async (id: string) => {
     await deleteProduct(id);
@@ -114,7 +127,7 @@ export default function AdminPage() {
             className="border p-2 rounded"
           />
           {imagePreview && (
-            <img src={imagePreview} alt="Preview" className="w-32 h-32 object-cover rounded border" />
+            <Image src={imagePreview} alt="Preview" width={128} height={128} className="w-32 h-32 object-cover rounded border" />
           )}
           <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">Add Product</button>
         </form>
@@ -127,7 +140,7 @@ export default function AdminPage() {
             <li key={product.id} className="border rounded p-4 flex justify-between items-center">
               <div>
                 {product.image && (
-                  <img src={product.image} alt={product.name} className="w-16 h-16 object-cover rounded mb-2" />
+                  <Image src={product.image} alt={product.name} width={64} height={64} className="w-16 h-16 object-cover rounded mb-2" />
                 )}
                 <div className="font-semibold">{product.name}</div>
                 <div className="text-gray-600">${product.price.toFixed(2)} | {product.category}</div>

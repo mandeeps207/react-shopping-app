@@ -3,9 +3,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import Link from 'next/link';
 import { useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
 
-const stripePromise = loadStripe('pk_test_12345'); // Replace with your real Stripe public key
 
 export default function PaymentPage() {
   const cartItems = useSelector((state: RootState) => state.cart.items);
@@ -14,7 +12,7 @@ export default function PaymentPage() {
 
   const handleCheckout = async () => {
     setLoading(true);
-    const stripe = await stripePromise;
+  // const stripe = await stripePromise;
     // In a real app, create a Checkout Session on your server and redirect
     alert('This is a mock. Integrate with your backend for real payments.');
     setLoading(false);

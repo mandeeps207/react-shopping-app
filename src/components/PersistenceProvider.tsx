@@ -5,6 +5,9 @@ import { addToCart } from '../store/slices/cartSlice';
 import { addToWishlist } from '../store/slices/wishlistSlice';
 import { RootState } from '../store';
 import { useSelector } from 'react-redux';
+import { Product } from '../utils/mockProducts';
+
+type CartItem = Product & { quantity: number };
 
 export default function PersistenceProvider({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch();
@@ -16,15 +19,15 @@ export default function PersistenceProvider({ children }: { children: React.Reac
     const cartData = localStorage.getItem('cart');
     if (cartData) {
       try {
-        const items = JSON.parse(cartData);
-        items.forEach((item: any) => dispatch(addToCart(item)));
+        const items: CartItem[] = JSON.parse(cartData);
+  items.forEach((item) => dispatch(addToCart({ ...item, id: Number(item.id) })));
       } catch {}
     }
     const wishlistData = localStorage.getItem('wishlist');
     if (wishlistData) {
       try {
-        const items = JSON.parse(wishlistData);
-        items.forEach((item: any) => dispatch(addToWishlist(item)));
+        const items: Product[] = JSON.parse(wishlistData);
+        items.forEach((item) => dispatch(addToWishlist(item)));
       } catch {}
     }
     // eslint-disable-next-line

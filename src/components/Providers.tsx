@@ -7,8 +7,10 @@ import ToastProvider from './ToastProvider';
 import { createContext, useEffect, useState, useContext } from 'react';
 import { onAuthChange } from '../utils/firebaseAuth';
 
+
+import { User } from 'firebase/auth';
 interface AuthContextType {
-  user: any;
+  user: User | null;
   loading: boolean;
 }
 
@@ -19,7 +21,7 @@ export function useAuth() {
 }
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

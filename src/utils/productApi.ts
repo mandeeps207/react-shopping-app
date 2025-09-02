@@ -7,8 +7,6 @@ import {
   deleteDoc,
   doc,
   Timestamp,
-  QueryDocumentSnapshot,
-  DocumentData,
 } from 'firebase/firestore';
 
 const COLLECTION = 'products';

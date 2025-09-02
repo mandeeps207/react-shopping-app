@@ -13,7 +13,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
   const product = mockProducts.find(p => String(p.id) === id);
   const dispatch = useDispatch();
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const [submitted, setSubmitted] = useState(false);

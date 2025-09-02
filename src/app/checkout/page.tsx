@@ -4,24 +4,32 @@ import { RootState } from '../../store';
 import Link from 'next/link';
 import { clearCart } from '../../store/slices/cartSlice';
 import { useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useAuth } from '../../components/Providers';
 import { addOrder } from '../../utils/orderApi';
+import { mockProducts } from '../../utils/mockProducts';
 
 export default function CheckoutPage() {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const dispatch = useDispatch();
   const [submitted, setSubmitted] = useState(false);
-  const { data: session } = useSession();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const userId = session?.user?.email || 'guest';
+    const userId = user?.email || 'guest';
     await addOrder({
       userId,
-      items: cartItems,
+      items: cartItems.map(item => {
+        const product = mockProducts.find(p => p.id === String(item.id));
+        return {
+          ...item,
+          id: String(item.id),
+          category: product?.category || '',
+        };
+      }),
       total,
     });
     setLoading(false);
